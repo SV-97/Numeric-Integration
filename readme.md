@@ -11,3 +11,5 @@ Implementation of numeric integration using simpsons method in various languages
 * C++
 * PHP
 * Julia
+* R
+* Java (Could use a more idiomatic implementationNumerical_Integration from someone that actually knows the language though)
