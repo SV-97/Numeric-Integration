@@ -76,8 +76,8 @@ integral_g_1 = com_simpson(g, interval_a, interval_b, n)
 integral_g_2 = trapez(g, interval_a, interval_b, n)
 
 # Example 2:
-integral_h_1 = com_simpson(h, 0.00, 3.141592654/2.0, 400);
-integral_h_2 = trapez(h, 0.00, 3.141592654/2.0, 100);
+integral_h_1 = com_simpson(h, 0.0, π/2, 400);
+integral_h_2 = trapez(h, 0.0, π/2, 100);
 	
 # Output
 println("Integral of g(x) over [", interval_a, " , ", interval_b, "]")
@@ -86,10 +86,10 @@ println("Trapez: ", integral_g_2)
 println("Exact value is ", 1/3 * (4*4*4))
 println()
 
-println("Integral of g(x) over [0 , pi/2]")
+println("Integral of g(x) over [0 , π/2]")
 println("Simpson: ", integral_h_1)
 println("Trapez: ", integral_h_2)
-println("Exact value is ", -cos(3.141592654/2.) + cos(0.))
+println("Exact value is ", -cos(π/2.) + cos(0.))
 
 
 
