@@ -77,8 +77,8 @@ integral_g_1 <- com_simpson(g, interval_a, interval_b, n)
 integral_g_2 <- trapez(g, interval_a, interval_b, n)
 
 # Example 2:
-integral_h_1 <- com_simpson(h, 0.00, 3.141592654/2.0, 400);
-integral_h_2 <- trapez(h, 0.00, 3.141592654/2.0, 100);
+integral_h_1 <- com_simpson(h, 0.00, 3.141592654/2.0, 400)
+integral_h_2 <- trapez(h, 0.00, 3.141592654/2.0, 100)
 	
 # Output
 print(paste0("Integral of g(x) over [", interval_a, " , ", interval_b, "]"))
