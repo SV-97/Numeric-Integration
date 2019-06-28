@@ -8,3 +8,6 @@ Implementation of numeric integration using simpsons method in various languages
 * Rust
 * Haskell
 * Python
+* C++
+* PHP
+*Julia
