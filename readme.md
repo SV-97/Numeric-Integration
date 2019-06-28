@@ -10,4 +10,4 @@ Implementation of numeric integration using simpsons method in various languages
 * Python
 * C++
 * PHP
-*Julia
+* Julia
