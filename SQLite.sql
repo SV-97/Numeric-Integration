@@ -39,25 +39,52 @@ INSERT INTO params(n, a, b) VALUES (100000, 0, 2*3.14159265359);
 INSERT INTO vars(step_size) VALUES ((SELECT (b-a)/n FROM params));
 
 WITH fs(f_xk0, f_sum, f_xk1) AS (
-    WITH xs(x_k0, x_k1) AS (
-        WITH RECURSIVE cnt(k) AS (
-            SELECT 0
-            UNION ALL
-            SELECT k+1 FROM cnt
-            LIMIT (SELECT n FROM params)
-        ), a AS (
-            SELECT a FROM params
-        ), step_size AS (
-            SELECT step_size FROM vars
+    /* The following line is only here to save a bit on the writing of the taylor series */
+    WITH xs_pi(x_0, x_1, x_01) AS (
+        WITH xs(x_k0, x_k1) AS (
+            WITH RECURSIVE cnt(k) AS (
+                SELECT 0
+                UNION ALL
+                SELECT k+1 FROM cnt
+                LIMIT (SELECT n FROM params)
+            ), a AS (
+                SELECT a FROM params
+            ), step_size AS (
+                SELECT step_size FROM vars
+            ) SELECT 
+                ((SELECT * FROM a) + (SELECT * FROM step_size) * k) as x_k0,
+                ((SELECT * FROM a) + (SELECT * FROM step_size) * (k+1)) as x_k1 
+            FROM cnt
         ) SELECT 
-            ((SELECT * FROM a) + (SELECT * FROM step_size) * k) as x_k0,
-            ((SELECT * FROM a) + (SELECT * FROM step_size) * (k+1)) as x_k1 
-        FROM cnt
-    ) SELECT /* The function is f(x) = 5x because there's no SIN in sqlite3 */
-        5 * x_k0 as f_xk0,
-        5 * ((x_k0 + x_k1)/2) as f_sum, 
-        5 * x_k1 as f_xk1 
-    FROM xs
+        /* Helper for the function */
+            (x_k0 - 3.14159265359) as x_0, 
+            (x_k1 - 3.14159265359) as x_1, 
+            (x_k0 + x_k1)/2 - 3.14159265359 as x_01
+        FROM xs
+    ) SELECT
+    /* 
+    The function is the taylorseries approximation with 4 terms of sin(x)
+    because there's no SIN in sqlite3. This part is also where the function implementation starts.
+    */
+        (
+            - x_0
+            + x_0*x_0*x_0 / 6
+            - x_0*x_0*x_0*x_0*x_0 / 120
+            + x_0*x_0*x_0*x_0*x_0*x_0*x_0 / 5040
+        ) as f_xk0,
+        (
+            - x_01
+            + x_01*x_01*x_01 / 6
+            - x_01*x_01*x_01*x_01*x_01 / 120
+            + x_01*x_01*x_01*x_01*x_01*x_01*x_01 / 5040
+        ) as f_sum,
+        (
+            - x_1
+            + x_1*x_1*x_1 / 6
+            - x_1*x_1*x_1*x_1*x_1 / 120
+            + x_1*x_1*x_1*x_1*x_1*x_1*x_1 / 5040
+        ) as f_xk1 
+    FROM xs_pi
 ), step_size AS(
     SELECT step_size FROM vars
 ) SELECT SUM((SELECT * FROM step_size) / 6 * (f_xk0 + 4 * f_sum + f_xk1)) as Integral FROM fs;
