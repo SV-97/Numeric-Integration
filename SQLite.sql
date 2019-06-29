@@ -53,7 +53,7 @@ WITH fs(f_xk0, f_sum, f_xk1) AS (
             ((SELECT * FROM a) + (SELECT * FROM step_size) * k) as x_k0,
             ((SELECT * FROM a) + (SELECT * FROM step_size) * (k+1)) as x_k1 
         FROM cnt
-    ) SELECT /* The function is f(x) = 5x because there's not SIN in sqlite3 */
+    ) SELECT /* The function is f(x) = 5x because there's no SIN in sqlite3 */
         5 * x_k0 as f_xk0,
         5 * ((x_k0 + x_k1)/2) as f_sum, 
         5 * x_k1 as f_xk1 
