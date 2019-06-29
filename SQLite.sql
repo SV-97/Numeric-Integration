@@ -57,8 +57,8 @@ WITH fs(f_xk0, f_sum, f_xk1) AS (
             FROM cnt
         ) SELECT 
         /* Helper for the function */
-            (x_k0 - 3.14159265359) as x_0, 
-            (x_k1 - 3.14159265359) as x_1, 
+            x_k0 - 3.14159265359 as x_0, 
+            x_k1 - 3.14159265359 as x_1, 
             (x_k0 + x_k1)/2 - 3.14159265359 as x_01
         FROM xs
     ) SELECT
