@@ -17,3 +17,4 @@ Implementation of numeric integration using simpsons method in various languages
 * SQLite3 (sue me)
 * C#
 * F#
+* Ruby
