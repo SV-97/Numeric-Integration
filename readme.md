@@ -18,3 +18,4 @@ Implementation of numeric integration using simpsons method in various languages
 * C#
 * F#
 * Ruby
+* Io
