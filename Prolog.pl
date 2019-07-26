@@ -61,3 +61,9 @@ compSimpsonBuiltIns(F, A, B, N, Integral) :-
     maplist(simpson(F, A, Step), Steps, Partials),
     sum_list(Partials, Integral).
 
+% Make it executeable via command line: swipl Prolog.pl
+exec(Integral) :- write("Handrolled: "), once(compSimpson(f, 0, 2*pi(), 100000, Integral)).
+exec(Integral) :- write("Built-ins: "), once(compSimpsonBuiltIns(f, 0, 2*pi(), 100000, Integral)).
+
+:- forall(exec(X), (write(X), nl)),
+    halt.
