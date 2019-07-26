@@ -20,3 +20,4 @@ Implementation of numeric integration using simpsons method in various languages
 * Ruby
 * Io
 * SWI-Prolog
+* Scala
