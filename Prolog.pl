@@ -39,7 +39,10 @@ map(_, [], []).
 map(F, [A|As], [B|Bs]) :-
     call(F, A, B),
     map(F, As, Bs).
-
+ 
+% alternative range
+% range(Start, Stop, List) :- findall(X, between(Start, Stop, X), List).
+% may have better memory footprint
 range(Start, Stop, Range) :-
     Start < Stop,
     insecureRange(Start, Stop, Range).
@@ -62,8 +65,8 @@ compSimpsonBuiltIns(F, A, B, N, Integral) :-
     sum_list(Partials, Integral).
 
 % Make it executeable via command line: swipl Prolog.pl
-exec(Integral) :- write("Handrolled: "), once(compSimpson(f, 0, 2*pi(), 100000, Integral)).
-exec(Integral) :- write("Built-ins: "), once(compSimpsonBuiltIns(f, 0, 2*pi(), 100000, Integral)).
+exec(Integral) :- write("Handrolled: "), once(compSimpson(f, 0, 2, 100000, Integral)).
+exec(Integral) :- write("Built-ins:  "), once(compSimpsonBuiltIns(f, 0, 2, 100000, Integral)).
 
 :- forall(exec(X), (write(X), nl)),
     halt.
