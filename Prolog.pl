@@ -4,6 +4,7 @@ compSimpson(f, 0, 2*pi(), 100000, Integral).
 */
 
 % test stuff
+% Just as a future reference, Lambdas: https://www.swi-prolog.org/pldoc/man?section=yall
 test(X, Y) :- Y is X + 10.
 g(F, X, Y) :- call(F, X, Y). % simple higher order predicate
 
@@ -16,15 +17,15 @@ test3(X, Y) :-
     assert((subPred(Z1, Z2) :- call(test2(1), Z1, Z2))),
     call(subPred, X, Y).
 
+count([], 0).
+count([_|Tail], Count) :- count(Tail, TailCount), Count is TailCount + 1.
+
 % actual implementation
 
 f(X, Y) :- Y is sin(X).
 
-count(0, []).
-count(Count, [_|Tail]) :- count(TailCount, Tail), Count is TailCount + 1.
-
-sum(0, []).
-sum(Total, [X|Xs]) :- sum(PartSum, Xs), Total is X + PartSum.
+sum([], 0).
+sum([X|Xs], Total) :- sum(Xs, PartSum), Total is X + PartSum.
 
 simpson(F, A, Step, K, P) :- 
     Xk0 is A + K * Step,
@@ -39,14 +40,24 @@ map(F, [A|As], [B|Bs]) :-
     call(F, A, B),
     map(F, As, Bs).
 
-range(Stop, Stop, []).
-range(Start, Stop, [Start | Starts]) :-
+range(Start, Stop, Range) :-
+    Start < Stop,
+    insecureRange(Start, Stop, Range).
+
+insecureRange(Stop, Stop, []).
+insecureRange(Start, Stop, [Start | Starts]) :-
     NStart is Start + 1,
-    range(NStart, Stop, Starts).
+    insecureRange(NStart, Stop, Starts).
 
 compSimpson(F, A, B, N, Integral) :-
     Step is (B - A) / N,
-    assert((cF(X, Y) :- call(simpson, F, A, Step, X, Y))), % cF(x, y) = curried F
     range(0, N, Steps),
-    map(cF, Steps, Partials),
-    sum(Integral, Partials).
+    map(simpson(F, A, Step), Steps, Partials),
+    sum(Partials, Integral).
+
+compSimpsonBuiltIns(F, A, B, N, Integral) :-
+    Step is (B - A) / N,
+    range(0, N, Steps),
+    maplist(simpson(F, A, Step), Steps, Partials),
+    sum_list(Partials, Integral).
+
