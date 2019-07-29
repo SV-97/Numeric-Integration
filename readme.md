@@ -21,3 +21,5 @@ Implementation of numeric integration using simpsons method in various languages
 * Io
 * SWI-Prolog
 * Scala
+* Erlang
+* Clojure
