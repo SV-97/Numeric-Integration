@@ -41,7 +41,7 @@ map(F, [A|As], [B|Bs]) :-
     map(F, As, Bs).
  
 % alternative range
-% range(Start, Stop, List) :- findall(X, between(Start, Stop, X), List).
+% range(Start, Stop, List) :- findall(X, between(Start, Stop, X), [X | List]).
 % may have better memory footprint
 range(Start, Stop, Range) :-
     Start < Stop,

@@ -23,3 +23,4 @@ Implementation of numeric integration using simpsons method in various languages
 * Scala
 * Erlang
 * Clojure
+* Factor (Thanks to *u/chunes* on reddit for helping me with *inline* and the *call(* annotation)
