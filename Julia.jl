@@ -4,14 +4,15 @@
 # Define some functions you want to integrate
 g(x) = x^2
 h(x) = sin(x)
+k(x) = 3^(3*x-1)
 
 
 
 function com_simpson(f, a, b, n)
     # Composite Simpson's rule
     # Integration of function f over interval [a,b] where n is
-	# the number of subintervals. Accuracy only depends on the 
-	# number of subintervals.
+    # the number of subintervals. Accuracy only depends on the 
+    # number of subintervals.
     
     sum = 0
 
@@ -24,12 +25,12 @@ function com_simpson(f, a, b, n)
     h = (b - a) / n
 
     # Calculate integral value with composite simpson's rule
-    for k = 0:n
+    for k = 1:n
 
         x_k = a + k * h
-		x_k1 = a + (k+1) * h
+		x_k1 = a + (k-1) * h
 		
-		simpson = h/6 * ( f(x_k) + 4* f((x_k + x_k1)/2) + f(x_k1) )
+		simpson = h/6 * ( f(x_k1) + 4* f((x_k1 + x_k)/2) + f(x_k) )
 		
         sum += simpson
     end
@@ -76,9 +77,13 @@ integral_g_1 = com_simpson(g, interval_a, interval_b, n)
 integral_g_2 = trapez(g, interval_a, interval_b, n)
 
 # Example 2:
-integral_h_1 = com_simpson(h, 0.0, π/2, 400);
-integral_h_2 = trapez(h, 0.0, π/2, 100);
-	
+integral_h_1 = com_simpson(h, 0.0, π/2, 400)
+integral_h_2 = trapez(h, 0.0, π/2, 100)
+
+# Example 3:
+integral_k_1 = com_simpson(k, 0.00, 2.00, 3)
+integral_k_2 = trapez(k, 0.00, 2.00, 3)
+
 # Output
 println("Integral of g(x) over [", interval_a, " , ", interval_b, "]")
 println("Simpson: ", integral_g_1)
@@ -90,7 +95,10 @@ println("Integral of g(x) over [0 , π/2]")
 println("Simpson: ", integral_h_1)
 println("Trapez: ", integral_h_2)
 println("Exact value is ", -cos(π/2.) + cos(0.))
+println()
 
-
-
+println("Integral of k(x) over [0 , 2]")
+println("Simpson: ", integral_k_1)
+println("Trapez: ", integral_k_2)
+println("Exact value is ", 728/(9 * log(3)))
 
