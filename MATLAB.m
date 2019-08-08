@@ -8,6 +8,7 @@ format long
 % Create some functions you want to integrate like this:
 g = @(x) x^2;
 h = @(x) sin(x);
+k = @(x) 3^(3*x-1);
 
 interval_a = 0;       % Lower interval bound 
 interval_b = 4;       % Upper interval bound
@@ -22,6 +23,10 @@ integral_g_2 = trapez(g, interval_a, interval_b, n);
 integral_h_1 = com_simpson(h, 0.00, 3.141592654/2.0, 400);
 integral_h_2 = trapez(h, 0.00, 3.141592654/2.0, 100);
 
+% Example 3:
+integral_k_1 = com_simpson(k, 0.0, 2.0, 3);
+integral_k_2 = trapez(k, 0.0, 2.0, 3);
+
 % Output
 disp(['Integral of g(x) over [', num2str(interval_a), ' , ', num2str(interval_b), ']'])
 disp(['Simpson: ', num2str(integral_g_1)])
@@ -33,7 +38,12 @@ disp('Integral of g(x) over [0 , pi/2]')
 disp(['Simpson: ', num2str(integral_h_1)])
 disp(['Trapez: ', num2str(integral_h_2)])
 disp(['Exact value is ', num2str(-cos(3.141592654/2.) + cos(0.))])
+fprintf('\n')
 
+disp('Integral of k(x) over [0 , 2]')
+disp(['Simpson: ', num2str(integral_k_1)])
+disp(['Trapez: ', num2str(integral_k_2)])
+disp(['Exact value is ', num2str(728/(9 * log(3)))])
 
 function [integralValue] = com_simpson(f, a, b, n)
 % Composite Simpson's rule
@@ -52,12 +62,12 @@ end
 h = (b - a) / n;
 
 % Calculate integral value with composite simpson's rule
-    for k = 0:n
+    for k = 1:n
 
         x_k = a + k * h;
-		x_k1 = a + (k+1) * h;
+		x_k1 = a + (k-1) * h;
 		
-		simpson = h/6 * ( f(x_k) + 4* f((x_k + x_k1)/2) + f(x_k1) );
+		simpson = h/6 * ( f(x_k1) + 4* f((x_k1 + x_k)/2) + f(x_k) );
 		
         sum = sum + simpson;
     end
@@ -90,8 +100,4 @@ h = (b - a) / n;
     integralValue = h * (0.5 * f(a) + 0.5 * f(b) + sum);
 
 end
-
-
-
-
 
