@@ -3,14 +3,14 @@
 object ScalaSimpson {
      def simpson(f: Double => Double, a: Double, step: Double)(k: Int): Double = {
         val xk = a + k * step
-        val xk1 = a + (k + 1) * step
-        step / 6 * (f(xk) + 4 * f((xk + xk1) / 2) + f(xk1))
+        val xk1 = a + (k - 1) * step
+        step / 6 * (f(xk) + f(xk1) + 4 * f((xk + xk1) / 2))
     }
 
     def compSimpson(f: Double => Double, a: Double, b: Double, n: Int): Double = {
         val step = (b - a) / n
         val simp = simpson(f, a, step)(_)
-        (0 to n).map(simp).sum
+        (1 to n).map(simp).sum
     }
 
     def main(args: Array[String]): Unit = {

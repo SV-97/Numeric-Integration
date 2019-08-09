@@ -22,11 +22,11 @@ namespace NumericIntegration
         {
             var step_size = (b - a) / n;
             var integral = 0.0;
-            for(int k=0; k < n; k++)
+            for(int k=1; k =< n; k++)
             {
                 var x_k0 = a + step_size * k;
-                var x_k1 = a + step_size * (k + 1);
-                var fac = f(x_k0) + 4 * f((x_k0 + x_k1) / 2) + f(x_k1);
+                var x_k1 = a + step_size * (k - 1);
+                var fac = f(x_k0) + f(x_k1) + 4 * f((x_k0 + x_k1) / 2);
                 var step = step_size / 6 * fac;
                 integral += step;
             }

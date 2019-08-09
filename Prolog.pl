@@ -29,11 +29,11 @@ sum([X|Xs], Total) :- sum(Xs, PartSum), Total is X + PartSum.
 
 simpson(F, A, Step, K, P) :- 
     Xk0 is A + K * Step,
-    Xk1 is A + (K + 1) * Step,
+    Xk1 is A + (K - 1) * Step,
     call(F, Xk0, Fxk0), 
     call(F, Xk1, Fxk1), 
     call(F, (Xk0 + Xk1) / 2, Fxk01), 
-    P is Step / 6 * (Fxk0 + 4 * Fxk01 + Fxk1).
+    P is Step / 6 * (Fxk0 + Fxk1 + 4 * Fxk01).
 
 map(_, [], []).
 map(F, [A|As], [B|Bs]) :-
@@ -41,12 +41,12 @@ map(F, [A|As], [B|Bs]) :-
     map(F, As, Bs).
  
 % alternative range
-% range(Start, Stop, List) :- findall(X, between(Start, Stop, X), [X | List]).
+range(Start, Stop, List) :- findall(X, between(Start, Stop, X), [X | List]).
 % may have better memory footprint
-range(Start, Stop, Range) :-
+/* range(Start, Stop, Range) :-
     Start < Stop,
     once(insecureRange(Start, Stop, Range)).
-
+ */
 insecureRange(Stop, Stop, []).
 insecureRange(Start, Stop, [Start | Starts]) :-
     NStart is Start + 1,
@@ -54,7 +54,8 @@ insecureRange(Start, Stop, [Start | Starts]) :-
 
 compSimpson(F, A, B, N, Integral) :-
     Step is (B - A) / N,
-    range(0, N, Steps),
+    RangeEnd is N + 1,
+    range(1, RangeEnd, Steps),
     map(simpson(F, A, Step), Steps, Partials),
     sum(Partials, Integral).
 
@@ -65,8 +66,8 @@ compSimpsonBuiltIns(F, A, B, N, Integral) :-
     sum_list(Partials, Integral).
 
 % Make it executeable via command line: swipl Prolog.pl
-exec(Integral) :- write("Handrolled: "), once(compSimpson(f, 0, 2 * pi(), 100000, Integral)).
-exec(Integral) :- write("Built-ins:  "), once(compSimpsonBuiltIns(f, 0, 2 * pi(), 100000, Integral)).
+% exec(Integral) :- write("Handrolled: "), once(compSimpson(f, 0, 2 * pi(), 100000, Integral)).
+exec(Integral) :- once(compSimpsonBuiltIns(f, 0, 2 * pi(), 100000, Integral)).
 
 :- forall(exec(X), (write(X), nl)),
     halt.

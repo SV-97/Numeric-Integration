@@ -43,7 +43,7 @@ WITH fs(f_xk0, f_sum, f_xk1) AS (
     WITH xs_pi(x_0, x_1, x_01) AS (
         WITH xs(x_k0, x_k1) AS (
             WITH RECURSIVE cnt(k) AS (
-                SELECT 0
+                SELECT 1
                 UNION ALL
                 SELECT k+1 FROM cnt
                 LIMIT (SELECT n FROM params)
@@ -53,7 +53,7 @@ WITH fs(f_xk0, f_sum, f_xk1) AS (
                 SELECT step_size FROM vars
             ) SELECT 
                 ((SELECT * FROM a) + (SELECT * FROM step_size) * k) as x_k0,
-                ((SELECT * FROM a) + (SELECT * FROM step_size) * (k+1)) as x_k1 
+                ((SELECT * FROM a) + (SELECT * FROM step_size) * (k-1)) as x_k1 
             FROM cnt
         ) SELECT 
         /* Helper for the function */
