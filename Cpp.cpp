@@ -22,7 +22,7 @@ int main (void) {
 	double integral_k_1 = com_simpson(sin, 0.0, 2.0 * PI, 100000);
 
 	cout << integral_k_1 << endl;
-
+	return 0;
 }
 
 // Composite Simpson's rule
@@ -33,12 +33,6 @@ double com_simpson(double f(double), double a, double b, int n) {
 	// number of subintervals.
 	double h, x_k, x_k1, simpson;
 	double sum = 0.0;
-
-	if (a > b)
-	{
-		cerr << "ERROR: Lower interval bound a has to be smaller than upper bound b." << endl;
-		return 0;
-	}
 
 	// Step length h
 	h = (b - a) / n;
