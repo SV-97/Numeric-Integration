@@ -24,3 +24,7 @@ Implementation of numeric integration using simpsons method in various languages
 * Erlang
 * Clojure
 * Factor (Thanks to *u/chunes* on reddit for helping me with *inline* and the *call(* annotation)
+
+## Graph of startup + runtime
+
+![Graph of startup + runtime](./graphs/Figure_2.png "Graph of startup + runtime")
