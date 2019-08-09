@@ -14,11 +14,6 @@ com_simpson <- function(f, a, b, n) {
 	# number of subintervals.
 
     sum <- 0
-
-    if(a > b) {
-        print("ERROR: Lower interval bound a has to be smaller than upper bound b.")
-        return(0)
-    }
     
     # Step length h
     h <- (b - a) / n
@@ -36,6 +31,6 @@ com_simpson <- function(f, a, b, n) {
     return(sum)
 }
 
-integral <- com_simpson(f, 0.0, 2.0 * 3.141592654, 3)
+integral <- com_simpson(f, 0.0, 2.0 * 3.141592654, 100000)
 
 message(integral)
