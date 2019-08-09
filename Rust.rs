@@ -21,5 +21,5 @@ where
 fn main() {
     use std::f64;
     let integral = composite_simpsons(f64::sin, 0., 2. * f64::consts::PI, 100000);
-    println!("{:e}", integral);
+    println!("{:.5}", integral);
 }

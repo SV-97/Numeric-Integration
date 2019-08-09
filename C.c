@@ -23,6 +23,6 @@ double composite_simpson(double (*f)(double), double a, double b, int n) {
 int main() {
     double (*f)(double) = &sin;
     double integral = composite_simpson(f, 0.0, 2.0 * PI, 100000);
-    printf("%e\n", integral);
+    printf("%f\n", integral);
     return 0;
 }
