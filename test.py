@@ -11,16 +11,20 @@ from termcolor import colored
 from subprocess import check_output, run, PIPE, STDOUT
 import pathlib as pl
 from contextlib import contextmanager
-import asyncio
+from time import time
+import matplotlib.pyplot as plt
+from statistics import mean
 
 TICK = colored("✓", "green", attrs=["bold"])
 CROSS = colored("❌", "red", attrs=["bold"])
 
 
 class Language():
-    def __init__(self, compilation, execution):
+    def __init__(self, name, compilation, execution):
+        self.name = name
         self.compilation = compilation
         self.execution = execution
+        self.times = []
     
     def compile(self):
         if self.compilation is not None:
@@ -49,29 +53,29 @@ def constant_context():
                 p.unlink()
 
 languages = {
-    "C": Language("gcc -O3 C.c -lm", "./a.out"),
-    "C++": Language("g++ -O3 Cpp.cpp", "./a.out"),
-    "Clojure": Language(None, "clojure Clojure.clj"),
-    "Haskell": Language("ghc -O Haskell.hs", "./Haskell"),
-    "Io": Language(None, "io Io.io"),
-    "Julia": Language(None, "julia Julia.jl"),
-    "Java": Language("javac Main.java", "java Main"),
-    "Erlang": Language("erlc numi.erl", "escript numi.beam"),
-    "Factor": Language(None, "~/Downloads/factor/factor numi.factor"),
-    "PHP": Language(None, "php PHP.php"),
-    "Prolog": Language(None, "swipl Prolog.pl"),
-    "Python": Language(None, "python Python.py"), #uuuuh, meta
-    "R": Language(None, "Rscript R.r"),
-    "Ruby": Language(None, "ruby Ruby.rb"),
-    "Rust": Language("rustc -C opt-level=3 Rust.rs", "./Rust"),
-    "Scala": Language("scalac Scala.scala", "scala ScalaSimpson"),
-    "SQLite3": Language(None, "echo '.read SQLite.sql' | sqlite3 :memory:"),
+    Language("C", "gcc -O3 C.c -lm", "./a.out"),
+    Language("C++", "g++ -O3 Cpp.cpp", "./a.out"),
+    Language("Clojure", None, "clojure Clojure.clj"),
+    Language("Haskell", "ghc -O Haskell.hs", "./Haskell"),
+    Language("Io", None, "io Io.io"),
+    Language("Julia", None, "julia Julia.jl"),
+    Language("Java", "javac Main.java", "java Main"),
+    Language("Erlang", "erlc numi.erl", "escript numi.beam"),
+    Language("Factor", None, "~/Downloads/factor/factor numi.factor"),
+    Language("PHP", None, "php PHP.php"),
+    Language("Prolog", None, "swipl Prolog.pl"),
+    Language("Python", None, "python Python.py"), #uuuuh, meta
+    Language("R", None, "Rscript R.r"),
+    Language("Ruby", None, "ruby Ruby.rb"),
+    Language("Rust", "rustc -C opt-level=3 Rust.rs", "./Rust"),
+    Language("Scala", "scalac Scala.scala", "scala ScalaSimpson"),
+    Language("SQLite3", None, "echo '.read SQLite.sql' | sqlite3 :memory:"),
 }
 
-
 with constant_context():
-    for (name, lang) in languages.items():
+    for lang in languages:
         lang.compile()
+        name = lang.name
         try:
             proc = check_output(lang.execution, shell=True, stderr=STDOUT)
         except FileNotFoundError:
@@ -88,3 +92,32 @@ with constant_context():
             print(f"{TICK} {name}")
         else:
             print(f"{CROSS} {name}, got {parsed}")
+    
+    print()
+    print("Benchmarking...")
+    for i in range(10):
+        for lang in languages:
+            if len(lang.times) > 1:
+                if lang.times[0] > 1:
+                    continue
+            t1 = time()
+            check_output(lang.execution, shell=True, stderr=STDOUT)
+            t2 = time()
+            lang.times.append(t2 - t1)
+
+for lang in languages:
+    avg = mean(lang.times)
+    if avg <= 0.02: category = 1
+    elif avg <= 0.1: category = 2
+    elif avg <= 0.3: category = 3
+    else: category = 4
+    plt.legend()
+    plt.subplot(2, 2, category) # uses behaviour that's deprecated in 3.1.0 and may break on an update
+    xs = list(range(len(lang.times)))
+    ys = lang.times
+    plt.plot(xs, ys, label=lang.name)
+    plt.ylabel("t in s")
+    plt.xlabel("Iteration")
+
+plt.legend()
+plt.show()
