@@ -1,20 +1,14 @@
 from termcolor import colored
 import pathlib as pl
 from contextlib import contextmanager
-from asyncio import create_subprocess_exec as run, create_subprocess_shell as check_output
 from asyncio.subprocess import PIPE, STDOUT
 import asyncio
+from time import time
+import matplotlib.pyplot as plt
+from statistics import mean
 
 TICK = colored("✓", "green", attrs=["bold"])
 CROSS = colored("❌", "red", attrs=["bold"])
-
-
-async def compile(self):
-    if self.compilation is not None:
-        a = await asyncio.create_subprocess_shell(self.compilation, stdout=PIPE, stderr=PIPE)
-    else:
-        # because some languages like python compile on first execution
-        a = await asyncio.create_subprocess_shell(self.execution, stdout=PIPE, stderr=PIPE)
 
 
 class Language():
@@ -22,6 +16,7 @@ class Language():
         self.name = name
         self.compilation = compilation
         self.execution = execution
+        self.times = []
 
 
 def approx_equal(a, b, tolerance=1e-10):
@@ -31,7 +26,7 @@ def approx_equal(a, b, tolerance=1e-10):
 @contextmanager
 def constant_context():
     """Context manager to remove compilation artifacts (objectfiles etc.)"""
-    initial_files = [ p for p in pl.Path("./").iterdir() if p.is_file()]
+    initial_files = [p for p in pl.Path("./").iterdir() if p.is_file()]
     try:
         yield
     finally:
@@ -55,7 +50,7 @@ languages = {
     Language("Factor", None, "~/Downloads/factor/factor numi.factor"),
     Language("PHP", None, "php PHP.php"),
     Language("Prolog", None, "swipl Prolog.pl"),
-    Language("Python", None, "python Python.py"), #uuuuh, meta
+    Language("Python", None, "python Python.py"),  # uuuuh, meta
     Language("R", None, "Rscript R.r"),
     Language("Ruby", None, "ruby Ruby.rb"),
     Language("Rust", "rustc -C opt-level=3 Rust.rs", "./Rust"),
@@ -66,9 +61,10 @@ languages = {
 
 async def compile(lang):
     if lang.compilation is not None:
-        await asyncio.create_subprocess_shell(lang.compilation, stdout=PIPE, stderr=PIPE)
+        proc = await asyncio.create_subprocess_shell(lang.compilation, stdout=PIPE, stderr=PIPE)
     else:
-        await asyncio.create_subprocess_shell(lang.execution, stdout=PIPE, stderr=PIPE)
+        proc = await asyncio.create_subprocess_shell(lang.execution, stdout=PIPE, stderr=PIPE)
+    await proc.wait()
     return lang
 
 
@@ -79,7 +75,8 @@ async def execute(lang):
     return lang
 
 
-async def main():
+async def compile_and_verify():
+    """Compile all the languages that need compilation and verify that they give the correct output"""
     compilations = [compile(lang) for lang in languages]
     compilations = asyncio.as_completed(compilations)
     for compilation in compilations:
@@ -98,5 +95,45 @@ async def main():
         else:
             print(f"{CROSS} {name}, got {parsed}")
 
+
+async def benchmark():
+    print()
+    print("Benchmarking...")
+    for _ in range(10):
+        for lang in languages:
+            if len(lang.times) > 1:
+                if lang.times[0] > 1:
+                    continue
+            t1 = time()
+            proc = await asyncio.create_subprocess_shell(lang.execution, shell=True, stdout=PIPE, stderr=PIPE)
+            await proc.wait()
+            t2 = time()
+            lang.times.append(t2 - t1)
+
+
+def plot():
+    axs = [plt.subplot(2, 2, cat) for cat in range(1, 5)]
+    for lang in languages:
+        avg = mean(lang.times)
+        if avg <= 0.02:
+            category = 0
+        elif avg <= 0.1:
+            category = 1
+        elif avg <= 0.3:
+            category = 2
+        else:
+            category = 3
+        plt.legend()
+        plt.subplot(axs[category])
+        xs = list(range(len(lang.times)))
+        ys = lang.times
+        plt.plot(xs, ys, label=lang.name)
+        plt.ylabel("t in s")
+        plt.xlabel("Iteration")
+
+
 with constant_context():
-    asyncio.run(main())
+    asyncio.run(compile_and_verify())
+    asyncio.run(benchmark())
+    plot()
+    plt.show()
