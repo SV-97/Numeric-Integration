@@ -39,14 +39,16 @@ def constant_context():
 
 
 languages = {
-    Language("C", "gcc -O3 C.c -lm", "./a.out"),
-    Language("C++", "g++ -O3 Cpp.cpp", "./a.out"),
+    Language("C", "gcc -O3 C.c -lm -o C.out", "./C.out"),
+    Language("C++", "g++ -O3 Cpp.cpp -o CPP.out", "./CPP.out"),
+    Language("C#", "csc -O -out:CS.exe CS.cs", "mono CS.exe"),
     Language("Clojure", None, "clojure Clojure.clj"),
     Language("Haskell", "ghc -O Haskell.hs", "./Haskell"),
     Language("Io", None, "io Io.io"),
     Language("Julia", None, "julia Julia.jl"),
     Language("Java", "javac Main.java", "java Main"),
     Language("Erlang", "erlc numi.erl", "escript numi.beam"),
+    Language("F#", "fsharpc -O --standalone -o:FS.exe Program.fs", "./FS.exe"),
     Language("Factor", None, "~/Downloads/factor/factor numi.factor"),
     Language("PHP", None, "php PHP.php"),
     Language("Prolog", None, "swipl Prolog.pl"),
@@ -123,13 +125,13 @@ def plot():
             category = 2
         else:
             category = 3
-        plt.legend()
         plt.subplot(axs[category])
         xs = list(range(len(lang.times)))
         ys = lang.times
         plt.plot(xs, ys, label=lang.name)
         plt.ylabel("t in s")
         plt.xlabel("Iteration")
+        plt.legend()
 
 
 with constant_context():
