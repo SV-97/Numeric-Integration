@@ -1,4 +1,6 @@
-﻿open System
+﻿// fhsarpc -O Program.fs && ./Program.exe
+
+open System
 
 let simpson (f: double -> double) (a: double) (step: double) (k: int) : double = 
     let k_ = (double) k
@@ -14,6 +16,6 @@ let compSimps (f: double -> double) a b n =
 [<EntryPoint>]
 let main argv =
     let integral = simpson sin 0.0 (2.0*Math.PI) 100000
-    printf "%f" integral
+    printfn "%f" integral
     
     0 // return an integer exit code
