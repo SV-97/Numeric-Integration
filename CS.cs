@@ -1,4 +1,6 @@
-﻿using System;
+﻿// csc -O -out:CS.exe CS.cs && mono CS.exe
+
+using System;
 using System.Globalization;
 
 namespace NumericIntegration
