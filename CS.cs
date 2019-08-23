@@ -1,28 +1,15 @@
 ﻿using System;
+using System.Globalization;
 
 namespace NumericIntegration
-{   class Program
+{
+    class Program
     {
-        /*
-        interface Callable<A, B>
-        {
-            B call(A val);
-        }
-
-        class Sine : Callable<double, double>
-        {
-            public double call(double val)
-            {
-                return Math.Sin(val);
-            }
-        }
-        */
-
         static double CompositeSimpsons(Func<double, double> f, double a, double b, int n)
         {
             var step_size = (b - a) / n;
             var integral = 0.0;
-            for(int k=1; k =< n; k++)
+            for (int k = 1; k <= n; k++)
             {
                 var x_k0 = a + step_size * k;
                 var x_k1 = a + step_size * (k - 1);
@@ -35,8 +22,8 @@ namespace NumericIntegration
 
         static void Main(string[] args)
         {
-            var integral = CompositeSimpsons(Math.Sin, 0, 2*Math.PI, 100000);
-            Console.WriteLine($"{integral}");
+            var integral = CompositeSimpsons(Math.Sin, 0, 2 * Math.PI, 100000);
+            Console.WriteLine(integral.ToString(new CultureInfo("en-US")));
         }
     }
 }
