@@ -25,7 +25,7 @@ class Language():
         self.compilation = compilation
         self.execution = execution
         self.times = []
-    
+
     def compile(self):
         if self.compilation is not None:
             run(self.compilation, stdout=PIPE, stderr=STDOUT, shell=True)
@@ -41,7 +41,7 @@ def approx_equal(a, b, tolerance=1e-10):
 @contextmanager
 def constant_context():
     """Context manager to remove compilation artifacts (objectfiles etc.)"""
-    initial_files = [ p for p in pl.Path("./").iterdir() if p.is_file()]
+    initial_files = [p for p in pl.Path("./").iterdir() if p.is_file()]
     try:
         yield
     finally:
@@ -51,6 +51,7 @@ def constant_context():
             if p not in initial_files:
                 print(f"Removing: {p}")
                 p.unlink()
+
 
 languages = {
     Language("C", "gcc -O3 C.c -lm", "./a.out"),
@@ -64,7 +65,7 @@ languages = {
     Language("Factor", None, "~/Downloads/factor/factor numi.factor"),
     Language("PHP", None, "php PHP.php"),
     Language("Prolog", None, "swipl Prolog.pl"),
-    Language("Python", None, "python Python.py"), #uuuuh, meta
+    Language("Python", None, "python Python.py"),  # uuuuh, meta
     Language("R", None, "Rscript R.r"),
     Language("Ruby", None, "ruby Ruby.rb"),
     Language("Rust", "rustc -C opt-level=3 Rust.rs", "./Rust"),
@@ -92,7 +93,7 @@ with constant_context():
             print(f"{TICK} {name}")
         else:
             print(f"{CROSS} {name}, got {parsed}")
-    
+
     print()
     print("Benchmarking...")
     for i in range(10):
@@ -107,12 +108,17 @@ with constant_context():
 
 for lang in languages:
     avg = mean(lang.times)
-    if avg <= 0.02: category = 1
-    elif avg <= 0.1: category = 2
-    elif avg <= 0.3: category = 3
-    else: category = 4
+    if avg <= 0.02:
+        category = 1
+    elif avg <= 0.1:
+        category = 2
+    elif avg <= 0.3:
+        category = 3
+    else:
+        category = 4
     plt.legend()
-    plt.subplot(2, 2, category) # uses behaviour that's deprecated in 3.1.0 and may break on an update
+    # uses behaviour that's deprecated in 3.1.0 and may break on an update
+    plt.subplot(2, 2, category)
     xs = list(range(len(lang.times)))
     ys = lang.times
     plt.plot(xs, ys, label=lang.name)
@@ -120,4 +126,4 @@ for lang in languages:
     plt.xlabel("Iteration")
 
 plt.legend()
-plt.show()
+# plt.show()
