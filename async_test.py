@@ -17,6 +17,7 @@ class Language():
         self.compilation = compilation
         self.execution = execution
         self.times = []
+        self.compilation_failed = False
 
 
 def approx_equal(a, b, tolerance=1e-10):
@@ -58,6 +59,8 @@ languages = {
     Language("Rust", "rustc -C opt-level=3 Rust.rs", "./Rust"),
     Language("Scala", "scalac Scala.scala", "scala ScalaSimpson"),
     Language("SQLite3", None, "echo '.read SQLite.sql' | sqlite3 :memory:"),
+    Language("Chez Scheme", "scheme -q Scheme-setup.scm",
+             "scheme -q Scheme.scm"),
 }
 
 
@@ -91,6 +94,7 @@ async def compile_and_verify():
             parsed = float(val)
         except ValueError:
             print(f"{CROSS} {name}, failed to parse output: {val}")
+            lang.compilation_failed = True
             continue
         if approx_equal(parsed, 0):
             print(f"{TICK} {name}")
@@ -103,6 +107,8 @@ async def benchmark():
     print("Benchmarking...")
     for _ in range(10):
         for lang in languages:
+            if lang.compilation_failed:
+                continue
             if len(lang.times) > 1:
                 if lang.times[0] > 1:
                     continue
@@ -116,6 +122,8 @@ async def benchmark():
 def plot():
     axs = [plt.subplot(2, 2, cat) for cat in range(1, 5)]
     for lang in languages:
+        if lang.compilation_failed:
+            continue
         avg = mean(lang.times)
         if avg <= 0.02:
             category = 0

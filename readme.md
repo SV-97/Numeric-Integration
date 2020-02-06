@@ -24,6 +24,7 @@ Implementation of numeric integration using simpsons method in various languages
 - Erlang
 - Clojure
 - Factor (Thanks to _u/chunes_ on reddit for helping me with _inline_ and the _call(_ annotation)
+- Chez Scheme
 
 ## Graph of startup + runtime
 
