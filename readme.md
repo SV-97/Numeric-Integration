@@ -12,7 +12,7 @@ Implementation of numeric integration using simpsons method in various languages
 - PHP
 - Julia
 - R
-- Java (Could use a more idiomatic implementationNumerical_Integration from someone that actually knows the language though)
+- Java (Could use a more idiomatic implementation from someone that actually knows the language though)
 - Matlab
 - SQLite3 (sue me)
 - C#
