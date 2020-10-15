@@ -29,7 +29,6 @@ Module Module1
 
 		integral = CompositeSimpsons(AddressOf Math.Sin, 0.0, Math.PI * 2.0, 100000)
 		Console.WriteLine(integral)
-		Console.ReadLine()
 	End Sub
 
 End Module
